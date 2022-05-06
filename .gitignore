@@ -4,3 +4,6 @@
 # Ignore Logs
 *.log
 logs/
+
+# Domain
+domain.js
