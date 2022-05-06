@@ -1,0 +1,6 @@
+# Ignore file JSON
+*.json
+
+# Ignore Logs
+*.log
+logs/

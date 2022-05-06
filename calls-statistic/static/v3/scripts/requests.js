@@ -1,4 +1,4 @@
-const DOMAIN = "https://otchet.atonlab.ru/calls-statistic/";
+import { DOMAIN } from "./domain.js";
 
 
 class Auth {
