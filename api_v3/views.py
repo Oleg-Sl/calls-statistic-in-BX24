@@ -1,5 +1,6 @@
 from rest_framework import views, viewsets, filters, status, mixins, generics
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.db import models
@@ -8,6 +9,8 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django_filters import rest_framework as filters_drf
 
 from django.db import models
+
+
 
 import os
 import logging
@@ -77,10 +80,13 @@ class UsersViewSet(viewsets.ModelViewSet):
     serializer_class = UsersUpdateSerializer
     filter_backends = [filters_drf.DjangoFilterBackend]
     filterset_class = UsersDataFilter
+    permission_classes = [IsAuthenticated]
 
 
 # Обработчик установки приложения
 class InstallApiView(views.APIView):
+    permission_classes = [AllowAny]
+
     @xframe_options_exempt
     def post(self, request):
         data = {
@@ -98,6 +104,8 @@ class InstallApiView(views.APIView):
 
 # Обработчик установленного приложения
 class IndexApiView1(views.APIView):
+    permission_classes = [AllowAny]
+
     @xframe_options_exempt
     def post(self, request):
         return render(request, 'indexqwerty.html')
@@ -105,6 +113,8 @@ class IndexApiView1(views.APIView):
 
 # Обработчик удаления приложения
 class AppUnistallApiView(views.APIView):
+    permission_classes = [AllowAny]
+
     @xframe_options_exempt
     def post(self, request):
         return Response(status.HTTP_200_OK)
@@ -112,6 +122,8 @@ class AppUnistallApiView(views.APIView):
 
 # Обработчик создания, изменения, удаления дела
 class ActivityApiView(views.APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         logger_tasks_access.info(request.data)
         event = request.data.get("event", "")
@@ -131,6 +143,8 @@ class ActivityApiView(views.APIView):
 
 # Обработчик завершения звонка
 class CallsApiView(views.APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         logger_tasks_access.info(request.data)
         application_token = request.data.get("auth[application_token]", None)
@@ -144,7 +158,7 @@ class CallsApiView(views.APIView):
 
 # Обработчик завершения звонка
 class CallsDataApiView(views.APIView):
-    bx24 = bitrix24.Bitrix24()
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         application_token = request.data.get("auth[application_token]", None)
@@ -187,6 +201,8 @@ class CallsDataApiView(views.APIView):
 
 # Обработчик добавления пользователя в Битрикс24
 class UsersApiView(views.APIView):
+    permission_classes = [AllowAny]
+
     def post(self, request):
         logger_tasks_access.info(request.data)
         application_token = request.data.get("auth[application_token]", None)
@@ -201,6 +217,7 @@ class UsersApiView(views.APIView):
 
 # Обработчик добавления пользователя в Битрикс24
 class UsersDataApiView(views.APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         # application_token = request.data.get("auth[application_token]", None)
@@ -239,6 +256,8 @@ class UsersDataApiView(views.APIView):
 
 # Добавление и изменение производственного календаря - NEW
 class ProductionCalendarViewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, requests):
         year = requests.query_params.get("year", datetime.datetime.now().year)
         status_day = requests.query_params.get("status", "work")
@@ -301,6 +320,8 @@ class ProductionCalendarViewSet(views.APIView):
 
 # Добавление и изменение плана по звонкам - NEW
 class CallsPlanViewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def get(self, requests):
         year = requests.query_params.get("year", datetime.datetime.now().year)
 
@@ -400,6 +421,7 @@ def create_calendar(year, month):
 
 # получение данных сгруппированных по месяцам одного года
 class RationActiveByMonthApiView(views.APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         departs = request.data.get("depart", 1)
@@ -535,6 +557,7 @@ class RationActiveByMonthApiView(views.APIView):
 
 # получение данных сгруппированных по дням одного месяца
 class RationActiveByDayApiView(views.APIView):
+    permission_classes = [IsAuthenticated]
 
     def post(self, request):
         departs = request.data.get("depart", "1")
@@ -673,6 +696,7 @@ class CallsViewSet(viewsets.ModelViewSet):
     serializer_class = ActivitySerializer
     filter_backends = [DjangoFilterBackend, ]
     filterset_class = my_filters.CallsFilter
+    permission_classes = [IsAuthenticated]
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -681,6 +705,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     ordering = ["date_comment_add"]
     filter_backends = [DjangoFilterBackend, filters.OrderingFilter]
     filterset_class = my_filters.CommentFilter
+    permission_classes = [IsAuthenticated]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
@@ -709,6 +734,8 @@ class CommentViewSet(viewsets.ModelViewSet):
 
 # Изменение плана по звонкам - NEW
 class CallsPlanCompletedViewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
     def post(self, request):
         calendar_date = request.data.get("calendar", None)  # дата: гггг-мм-дд
         employee = request.data.get("employee", None)  # ID работника
