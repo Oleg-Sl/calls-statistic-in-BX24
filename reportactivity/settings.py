@@ -98,8 +98,8 @@ DATABASES = {
     'default': {
         'NAME': 'reportactivitydb',
         'ENGINE': 'django.db.backends.postgresql',
-        'USER': 'user_activity',
-        'PASSWORD': 'nsjJ78aFSjs68s9kHs7',
+        'USER': '',
+        'PASSWORD': '',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
